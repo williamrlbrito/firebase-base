@@ -6,9 +6,15 @@ import {
   serverTimestamp,
   collection,
   query,
-  onSnapshot
+  onSnapshot,
 } from 'firebase/firestore';
-import { Box, Button, Container, TextField, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { v4 } from 'uuid';
 import { useSnackbar } from 'notistack';
 
@@ -34,27 +40,27 @@ const Home: React.FC = () => {
         name,
         email,
         createdAt: serverTimestamp(),
-      }
+      };
 
-      await setDoc(doc(db, "users", id), data);
+      await setDoc(doc(db, 'users', id), data);
 
       enqueueSnackbar('User added', { variant: 'success' });
 
       setName('');
       setEmail('');
     } catch (error) {
-      console.error(error);
+      enqueueSnackbar('Error adding user', { variant: 'error' });
     }
   };
 
   useEffect(() => {
     const db = getFirestore();
-    const q = query(collection(db, "users"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => {
+    const q = query(collection(db, 'users'));
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      const data = querySnapshot.docs.map(userDoc => {
         return {
-          id: doc.id,
-          ...doc.data()
+          id: userDoc.id,
+          ...userDoc.data(),
         };
       }) as User[];
 
@@ -73,15 +79,17 @@ const Home: React.FC = () => {
           gap: '1rem',
         }}
       >
-        <Typography variant='h2' component="h1">User</Typography>
+        <Typography variant="h2" component="h1">
+          User
+        </Typography>
 
         <TextField
           name="name"
           label="Name"
           variant="outlined"
           value={name}
-          onChange={(e) => setName(e.target.value)}
-          autoComplete='off'
+          onChange={e => setName(e.target.value)}
+          autoComplete="off"
         />
 
         <TextField
@@ -89,14 +97,11 @@ const Home: React.FC = () => {
           label="Email"
           variant="outlined"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete='off'
+          onChange={e => setEmail(e.target.value)}
+          autoComplete="off"
         />
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAdd}>
+        <Button variant="contained" color="primary" onClick={handleAdd}>
           Add
         </Button>
       </Box>
@@ -109,17 +114,19 @@ const Home: React.FC = () => {
           gap: '2rem',
         }}
       >
-        {
-          users.map((user) => (
-            <Box key={user.id}>
-              <Typography variant='h3' component="h2">{user.name}</Typography>
-              <Typography variant='h4' component="h2">{user.email}</Typography>
-            </Box>
-          ))
-        }
+        {users.map(user => (
+          <Box key={user.id}>
+            <Typography variant="h3" component="h2">
+              {user.name}
+            </Typography>
+            <Typography variant="h4" component="h2">
+              {user.email}
+            </Typography>
+          </Box>
+        ))}
       </Box>
     </Container>
   );
-}
+};
 
 export default Home;
