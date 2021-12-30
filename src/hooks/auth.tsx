@@ -33,6 +33,7 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
+  loading: boolean;
   user: User;
   signUp(credentials: SignUpCredentials): Promise<void>;
   signIn(credentials: SignInCredentials): Promise<void>;
@@ -44,6 +45,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const AuthProvider: React.FC = ({ children }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<User>({} as User);
+  const [loading, setLoading] = useState(true);
 
   const auth = getAuth();
   const db = getFirestore();
@@ -86,7 +88,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, [auth]);
 
   useEffect(() => {
-    const subscriber = onAuthStateChanged(auth, async user => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
       if (user) {
         const id = user.uid;
         const docRef = doc(db, 'users', id);
@@ -107,14 +109,17 @@ const AuthProvider: React.FC = ({ children }) => {
       } else {
         setData({} as User);
       }
+
+      setLoading(false);
     });
 
-    return () => subscriber();
+    return () => unsubscribe();
   }, [auth, db, create, data.id]);
 
   return (
     <AuthContext.Provider
       value={{
+        loading,
         user: data,
         signUp,
         signIn,

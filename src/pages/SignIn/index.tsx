@@ -1,8 +1,15 @@
 import React from 'react';
-import { Box, Button, TextField, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import { useAuth } from '../../hooks/auth';
 
 const SignIn: React.FC = () => {
+  const theme = useTheme();
   const { signIn } = useAuth();
 
   const [email, setEmail] = React.useState('');
@@ -20,6 +27,7 @@ const SignIn: React.FC = () => {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <Box
@@ -43,7 +51,7 @@ const SignIn: React.FC = () => {
             borderRight: '1px solid #000',
           }}
         >
-          <Typography variant="h4" component="h1">
+          <Typography color="textPrimary" variant="h4" component="h1">
             Go Finance
           </Typography>
         </Box>
@@ -70,10 +78,10 @@ const SignIn: React.FC = () => {
               gap: '0.5rem',
             }}
           >
-            <Typography variant="h4" component="h2">
+            <Typography color="textPrimary" variant="h4" component="h2">
               Welcome
             </Typography>
-            <Typography variant="h6" component="p">
+            <Typography color="textPrimary" variant="h6" component="p">
               Please login to admin dashboard
             </Typography>
           </Box>
@@ -121,7 +129,7 @@ const SignIn: React.FC = () => {
             >
               login
             </Button>
-            <Typography variant="h6" component="p">
+            <Typography color="textPrimary" variant="h6" component="p">
               Forgotten your password?
             </Typography>
           </Box>
